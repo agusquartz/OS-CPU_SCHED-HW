@@ -5,6 +5,13 @@ import java.util.ArrayList;
 
 public class FileManager {
 
+    public static FileManager getInstance() {
+        if (instance == null) {
+            instance = new FileManager();
+        }
+        return instance;
+    }
+
     /**
      * Reads a CSV file line by line and stores each complete line in an ArrayList.
      *
@@ -26,14 +33,8 @@ public class FileManager {
         return lines;
     }
 
-    // Main method for testing the functionality
-    public static void main(String[] args) {
-        FileManager fileManager = new FileManager();
-        ArrayList<String> fileLines = fileManager.readFile("test.csv");
+    private FileManager(){};
 
-        for (String line : fileLines) {
-            System.out.println(line);
-        }
-    }
+    private static FileManager instance;
 }
 
