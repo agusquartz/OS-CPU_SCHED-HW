@@ -1,3 +1,3 @@
 public interface Algorithm {
-	public boolean apply(int[][] proc, int[][] gantt);
+	public boolean apply(Gantt g);
 }
