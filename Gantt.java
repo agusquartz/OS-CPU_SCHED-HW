@@ -3,14 +3,17 @@ public class Gantt{
     /* Constructor */
     public Gantt(Process[] procList){
         this.procList = procList;
-        //init ganttArray
-        this.ganttArray = new int[calculateBursts(this.procList)][this.procList.length];
     }	
 
     /* Populates gantt array */
     public boolean generate(Algorithm a){
+
         //reset procTable and ganttarray
+        this.totalBursts = calculateBursts(this.procList);
         this.procTable = new int[this.procList.length][PROC_TABLE_FIELDS];
+        this.ganttArray = new int[this.totalBursts][this.procList.length];
+
+        //populate
         populateProcTable();
         //apply algorithm
         a.apply(this);
@@ -69,14 +72,55 @@ public class Gantt{
      *      averages[2] is average execution time
      */
     private boolean average(){
-        return false;
+        //populate missing fields in procTable
+        //calculate wait time for each process
+        int i,j;
+        boolean response = false;   //no process has responded yet
+        for(i = 0; i < this.procList.length; i++){  //each process
+            for(j = this.procTable[i][this.ARRIVAL]; j < this.totalBursts; j++){  //each instant since the process arrives
+                switch (gantarray[i][j]){
+
+                    case WAITING:           //is waiting
+                        this.procTable[i][this.WAIT]++;
+                        this.procTable[i][this.EXEC]++;
+                        if(!response){
+                            this.procTable[i][this.RESP]++;
+                        }
+                        break;
+
+                    case EMPTY:                //it is finished
+                        //do nothing!
+                        break;
+
+                    case RUNNING:           //is running this instant
+                        if(!response){      //if it hadn't responded yet, now it has
+                            response = true;
+                        }
+                        this.procTable[i][this.EXEC]++;
+                        break;
+
+                }
+            }
+            response = false;       //set up for the next process
+        }
+        //calculate average
+        for(i = 0; i < this.procList.length; i++){
+            averages[0] += this.procTable[i][this.WAIT];
+            averages[1] += this.procTable[i][this.RESP];
+            averages[2] += this.procTable[i][this.EXEC];
+        }
+        //number of processes now in i
+        averages[0] /= i;
+        averages[1] /= i;
+        averages[2] /= i;
     }
 
     //private attributes
     private int[][] ganttArray;
     private int[][] procTable;
     private Process[] procList; 
-    private int[3] averages;
+    private double[3] averages;
+    private int totalBursts;
     //constants for array indexing
     public static final int PROC_TABLE_FIELDS = 7;
     public static final int ID = 0;
@@ -86,6 +130,10 @@ public class Gantt{
     public static final int WAIT = 4;
     public static final int RESP = 5;
     public static final int EXEC = 6;
+    //constants for ganttarray
+    public static final int EMPTY = 0;
+    public static final int RUNNING = 1;
+    public static final int WAITING = 2;
 
 }
 
