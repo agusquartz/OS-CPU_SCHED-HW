@@ -9,6 +9,6 @@ public class Main{
         Gantt g = new Gantt(processes);
 
         fileManager.checkOutput();
-        fileManager.appendToFile(g.generate(fcfs).toCSV();)
+        fileManager.appendToFile(g.generate(fcfs).toCSV());
     }
 }
