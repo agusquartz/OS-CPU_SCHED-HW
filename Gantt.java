@@ -11,7 +11,9 @@ public class Gantt{
         //reset procTable and ganttarray
         this.totalBursts = calculateBursts(this.procList);
         this.procTable = new int[this.procList.length][PROC_TABLE_FIELDS];
-        this.ganttArray = new int[this.totalBursts][this.procList.length];
+        //why are rows in totalBursts and cols are list length?
+        //this.ganttArray = new int[this.totalBursts][this.procList.length];
+        this.ganttArray = new int[this.procList.length][this.totalBursts];
 
         //populate
         populateProcTable();
