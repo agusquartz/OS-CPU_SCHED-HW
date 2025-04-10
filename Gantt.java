@@ -6,7 +6,7 @@ public class Gantt{
     }	
 
     /* Populates gantt array */
-    public boolean generate(Algorithm a){
+    public Gantt generate(Algorithm a){
 
         //reset procTable and ganttarray
         this.totalBursts = calculateBursts(this.procList);
@@ -19,8 +19,74 @@ public class Gantt{
         a.apply(this);
         //average
         average();
-        return true;
+        return this;
     }
+    /*
+    */
+    public String toCSV(String algoName){
+        StringBuilder sb = new StringBuilder(algoName + '\n');
+        //construct header
+        sb.append("ID,ARRIVAL,BURST,PRIO,,");
+        int i,j;
+        for(i = 0; i < this.totalBursts; i++){
+            sb.append("t"+i+",");
+        }
+        sb.append(",WAIT,RESP,EXEC,");
+        sb.append('\n');
+        //for each process
+        String id,arrival,burst,prio,wait,resp,exec;
+        for(i = 0; i < this.procList.length; i++){
+            //write process metadata
+            id = String.valueOf(this.procTable[i][this.ID]);
+            arrival = String.valueOf(this.procTable[i][this.ARRIVAL]);
+            burst = String.valueOf(this.procTable[i][this.BURST]);
+            prio = String.valueOf(this.procTable[i][this.PRIO]);
+            wait = String.valueOf(this.procTable[i][this.WAIT]);
+            resp = String.valueOf(this.procTable[i][this.RESP]);
+            exec = String.valueOf(this.procTable[i][this.EXEC]);
+
+            sb.append(id+",");
+            sb.append(arrival+",");
+            sb.append(burst+",");
+            sb.append(prio+",,");
+            //for each instant
+            for(j = 0; j < this.totalBursts; j++){
+                switch (this.ganttArray[i][j]){
+                    //if we're waiting, write ==
+                    case WAITING:
+                        sb.append("#,");
+                        break;
+                        //if we're running, write ->
+                    case RUNNING:
+                        sb.append("->,");
+                        break;
+                        //add a new comma
+                    default:
+                        sb.append(",");
+                        break;
+                }
+            }
+            sb.append(","+wait+",");
+            sb.append(resp+",");
+            sb.append(exec+",");
+        }
+        //add a newline
+        sb.append("\n\n\n");
+        sb.append(",,,,,");
+        for(j = 0; j < this.totalBursts; j++){
+            sb.append(",");
+        }
+        sb.append(",");
+        String avgWait,avgResp,avgExec;
+        avgWait = String.valueOf(this.averages[AVGWAIT]);
+        avgResp = String.valueOf(this.averages[AVGRESP]);
+        avgExec = String.valueOf(this.averages[AVGEXEC]);
+        sb.append(avgWait+","+avgResp+","+avgExec+",");
+
+        return sb.toString();
+    }
+
+
 
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -49,14 +115,15 @@ public class Gantt{
     private boolean populateProcTable(){
         Process[] list = this.procList;
         for (Process proc : list){
-            this.procTable[this.ID] = proc.getID();
-            this.procTable[this.BURST] = proc.getBurst();
-            this.procTable[this.PRIO] = proc.getPriority();
-            this.procTable[this.ARRIVAL] = proc.getArrival();
+            int i = proc.getId();
+            this.procTable[i][this.ID] = proc.getId();
+            this.procTable[i][this.BURST] = proc.getBurst();
+            this.procTable[i][this.PRIO] = proc.getPriority();
+            this.procTable[i][this.ARRIVAL] = proc.getArrival();
             //the following fields will be calculated after the algorithm has been applied
-            this.procTable[this.WAIT] = -1;  //total wait time of this process
-            this.procTable[this.RESP] = -1;  //total response time of this process
-            this.procTable[this.EXEC] = -1;  //total execution time of this process
+            this.procTable[i][this.WAIT] = -1;  //total wait time of this process
+            this.procTable[i][this.RESP] = -1;  //total response time of this process
+            this.procTable[i][this.EXEC] = -1;  //total execution time of this process
         }
         return true;
     }
@@ -74,11 +141,12 @@ public class Gantt{
     private boolean average(){
         //populate missing fields in procTable
         //calculate wait time for each process
+        this.averages = new double[3];
         int i,j;
         boolean response = false;   //no process has responded yet
         for(i = 0; i < this.procList.length; i++){  //each process
             for(j = this.procTable[i][this.ARRIVAL]; j < this.totalBursts; j++){  //each instant since the process arrives
-                switch (gantarray[i][j]){
+                switch (ganttArray[i][j]){
 
                     case WAITING:           //is waiting
                         this.procTable[i][this.WAIT]++;
@@ -89,7 +157,7 @@ public class Gantt{
                         break;
 
                     case EMPTY:                //it is finished
-                        //do nothing!
+                                               //do nothing!
                         break;
 
                     case RUNNING:           //is running this instant
@@ -113,13 +181,14 @@ public class Gantt{
         averages[0] /= i;
         averages[1] /= i;
         averages[2] /= i;
+        return true;
     }
 
     //private attributes
     private int[][] ganttArray;
     private int[][] procTable;
     private Process[] procList; 
-    private double[3] averages;
+    private double[] averages;
     private int totalBursts;
     //constants for array indexing
     public static final int PROC_TABLE_FIELDS = 7;
@@ -130,6 +199,10 @@ public class Gantt{
     public static final int WAIT = 4;
     public static final int RESP = 5;
     public static final int EXEC = 6;
+    public static final int AVGWAIT = 0;
+    public static final int AVGRESP = 1;
+    public static final int AVGEXEC = 2;
+
     //constants for ganttarray
     public static final int EMPTY = 0;
     public static final int RUNNING = 1;
