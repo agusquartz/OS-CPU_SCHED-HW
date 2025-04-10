@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -32,6 +33,19 @@ public class FileManager {
 
         return lines;
     }
+
+    public static void appendToFile(String text) {
+        String filePath = "gantt.csv";
+
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            writer.write(text);
+            writer.write(System.lineSeparator()); // Agrega un salto de línea después del texto
+            System.out.println("Texto agregado exitosamente al archivo.");
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo: " + e.getMessage());
+        }
+    }
+
 
     private FileManager(){};
 
