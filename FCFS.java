@@ -5,7 +5,7 @@ public class FCFS implements Algorithm {
 
     @Override
     public boolean apply(Gantt g){
-        int[][] gantArray = g.getGanttArray();
+        int[][] ganttArray = g.getGanttArray();
         int[][] procTable = g.getProcTable();
         int amountProcs = procTable.length;
 
