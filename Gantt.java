@@ -33,8 +33,7 @@ public class Gantt{
         for(i = 0; i < this.totalBursts; i++){
             sb.append("t"+i+",");
         }
-        sb.append(",WAIT,RESP,EXEC,");
-        sb.append('\n');
+        sb.append(",WAIT,RESP,EXEC,"+ '\n');
         //for each process
         String id,arrival,burst,prio,wait,resp,exec;
         for(i = 0; i < this.procList.length; i++){
@@ -70,10 +69,10 @@ public class Gantt{
             }
             sb.append(","+wait+",");
             sb.append(resp+",");
-            sb.append(exec+",");
+            sb.append(exec+",\n");
         }
         //add a newline
-        sb.append("\n\n\n");
+        sb.append("\n\n");
         sb.append(",,,,,");
         for(j = 0; j < this.totalBursts; j++){
             sb.append(",");
@@ -131,9 +130,9 @@ public class Gantt{
             this.procTable[i][this.PRIO] = proc.getPriority();
             this.procTable[i][this.ARRIVAL] = proc.getArrival();
             //the following fields will be calculated after the algorithm has been applied
-            this.procTable[i][this.WAIT] = -1;  //total wait time of this process
-            this.procTable[i][this.RESP] = -1;  //total response time of this process
-            this.procTable[i][this.EXEC] = -1;  //total execution time of this process
+            this.procTable[i][this.WAIT] = 0;  //total wait time of this process
+            this.procTable[i][this.RESP] = 0;  //total response time of this process
+            this.procTable[i][this.EXEC] = 0;  //total execution time of this process
         }
         return true;
     }
