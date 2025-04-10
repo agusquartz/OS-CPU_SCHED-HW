@@ -1,11 +1,11 @@
 public class Gantt{
 
     /* Constructor */
-	public Gantt(Process[] procList){
-		this.procList = procList;
-		//init ganttArray
+    public Gantt(Process[] procList){
+        this.procList = procList;
+        //init ganttArray
         this.ganttArray = new int[calculateBursts(this.procList)][this.procList.length];
-	}	
+    }	
 
     /* Populates gantt array */
     public boolean generate(Algorithm a){
@@ -20,23 +20,23 @@ public class Gantt{
     }
 
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * Private stuff
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     *
+     * Private stuff
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     /* Calculate total number of bursts. Adds all bursts from all 
      * processes, and returns the total. It's used to determine the 
      * number of columns in our gantt chart
      */
-	private int calculateBursts(Process[] procs){
-		int totalBursts = 0;
-		for(int i = 0; i < procs.length; i++){
-			totalBursts += procs[i].getBurst();
-		}
-		return totalBursts;
-	}
+    private int calculateBursts(Process[] procs){
+        int totalBursts = 0;
+        for(int i = 0; i < procs.length; i++){
+            totalBursts += procs[i].getBurst();
+        }
+        return totalBursts;
+    }
 
     /* 
      * This method fills the processes table with info from the list 
@@ -72,21 +72,21 @@ public class Gantt{
         return false;
     }
 
-	//private attributes
-	private int[][] ganttArray;
-	private int[][] procTable;
-	private Process[] procList; 
+    //private attributes
+    private int[][] ganttArray;
+    private int[][] procTable;
+    private Process[] procList; 
     private int[3] averages;
     //constants for array indexing
-    private final int PROC_TABLE_FIELDS = 7;
-    private final int ID = 0;
-    private final int BURST = 1;
-    private final int PRIO = 2;
-    private final int ARRIVAL = 3;
-    private final int WAIT = 4;
-    private final int RESP = 5;
-    private final int EXEC = 6;
- 
+    public static final int PROC_TABLE_FIELDS = 7;
+    public static final int ID = 0;
+    public static final int BURST = 1;
+    public static final int PRIO = 2;
+    public static final int ARRIVAL = 3;
+    public static final int WAIT = 4;
+    public static final int RESP = 5;
+    public static final int EXEC = 6;
+
 }
-			
+
 
