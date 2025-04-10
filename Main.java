@@ -4,12 +4,11 @@ public class Main{
         String path = "test.csv";
         FileManager fileManager = FileManager.getInstance();
         Parser parser = Parser.getInstance();
-
-
         Process[] processes = parser.parse(fileManager.readFile(path));
+        FCFS fcfs = new FCFS();
+        Gantt g = new Gantt(processes);
 
-        for(Process proc : processes){
-            System.out.println(proc.toString());
-        }
+        FileManager.checkOutput();
+        FileManager.appendToFile(g.generate(fcfs).toCSV();)
     }
 }
