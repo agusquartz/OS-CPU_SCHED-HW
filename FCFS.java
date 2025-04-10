@@ -45,18 +45,22 @@ public class FCFS implements Algorithm {
             int tempTime = arrival; // current Time (past) but to set Gantt.WAITING in ganttArray
 
             // Fill Gantt.WAITING
-            for (int j = tempTime; j < (waiting + tempTime); j++){
+            for (int j = tempTime; j < (waiting + tempTime)-1; j++){
                 ganttArray[j][procIndex] = Gantt.WAITING;
             }
 
             // Fill Gantt.RUNNING (currentTime++)
-            for (int j = currentTime; j < (burst + currentTime); j++){
+            for (int j = currentTime; j < (burst + currentTime)-1; j++){
+                if (j >= ganttArray.length || procIndex >= ganttArray[0].length){
+                    break;    
+                }
                 ganttArray[j][procIndex] = Gantt.RUNNING;
                 currentTime++;
             }
 
-            return true;
         }
+
+            return true;
 
     }
 }

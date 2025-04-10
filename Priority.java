@@ -55,8 +55,8 @@ public class Priority implements Algorithm {
                 currentTime++;
             }
 
-            return true;
         }
+        return true;
 
     }
 }
