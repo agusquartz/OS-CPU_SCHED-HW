@@ -41,19 +41,21 @@ public class FCFS implements Algorithm {
             int procIndex = indexes[i]; // retrieve the process index to be executed now.
             int arrival = procTable[procIndex][Gantt.ARRIVAL];
             int burst = procTable[procIndex][Gantt.BURST];
+            int waiting = currentTime - arrival;
+            int tempTime = arrival; // current Time (past) but to set Gantt.WAITING in ganttArray
 
-            if (currentTime < arrival){
-                currentTime = arrival;
+            // Fill Gantt.WAITING
+            for (int i = tempTime; i < (waiting + tempTime); i++){
+                gantArray[i][procIndex] = Gantt.WAITING;
             }
 
-            int waiting = currentTime - arrival;
-            int turnaround = waiting + burst;
+            // Fill Gantt.RUNNING (currentTime++)
+            for (int i = currentTime; i < (burst + currentTime); i++){
+                ganttArray[i][procIndex] = Gantt.RUNNING;
+                currentTime++;
+            }
 
-            // Fill Gantt.RUNNING and Gantt.WAITING
-
-            procTable[procIndex][Gantt.RESP] = turnaround;
-            procTable[procIndex][Gantt.WAIT] = waiting;
-            procTable[procTable][Gantt.EXEC] = burst;
+            return true;
         }
 
     }
