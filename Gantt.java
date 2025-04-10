@@ -70,7 +70,7 @@ public class Gantt{
             }
             sb.append(","+wait+",");
             sb.append(resp+",");
-            sb.append(exec+",");
+            sb.append(exec+",\n");
         }
         //add a newline
         sb.append("\n\n\n");
@@ -83,7 +83,7 @@ public class Gantt{
         avgWait = String.valueOf(this.averages[AVGWAIT]);
         avgResp = String.valueOf(this.averages[AVGRESP]);
         avgExec = String.valueOf(this.averages[AVGEXEC]);
-        sb.append(avgWait+","+avgResp+","+avgExec+",");
+        sb.append(avgWait+","+avgResp+","+avgExec+",\n\n");
 
         return sb.toString();
     }
