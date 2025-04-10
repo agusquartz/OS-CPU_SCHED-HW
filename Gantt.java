@@ -86,6 +86,14 @@ public class Gantt{
         return sb.toString();
     }
 
+    //getters
+    public int[][] getGanttArray(){
+        return this.ganttArray;
+    }
+
+    public int[][] getProcTable(){
+        return this.procTable;
+    }
 
 
 
