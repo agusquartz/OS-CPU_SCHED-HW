@@ -8,7 +8,7 @@ public class Main{
         FCFS fcfs = new FCFS();
         Gantt g = new Gantt(processes);
 
-        FileManager.checkOutput();
-        FileManager.appendToFile(g.generate(fcfs).toCSV();)
+        fileManager.checkOutput();
+        fileManager.appendToFile(g.generate(fcfs).toCSV();)
     }
 }

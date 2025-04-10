@@ -46,7 +46,7 @@ public class Priority implements Algorithm {
 
             // Fill Gantt.WAITING
             for (int j = tempTime; j < (waiting + tempTime); j++){
-                gantArray[j][procIndex] = Gantt.WAITING;
+                ganttArray[j][procIndex] = Gantt.WAITING;
             }
 
             // Fill Gantt.RUNNING (currentTime++)
