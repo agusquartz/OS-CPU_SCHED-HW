@@ -82,7 +82,7 @@ public class Gantt{
         avgWait = String.valueOf(this.averages[AVGWAIT]);
         avgResp = String.valueOf(this.averages[AVGRESP]);
         avgExec = String.valueOf(this.averages[AVGEXEC]);
-        sb.append(avgWait+","+avgResp+","+avgExec+",");
+        sb.append(avgWait+","+avgResp+","+avgExec+",\n\n");
 
         return sb.toString();
     }

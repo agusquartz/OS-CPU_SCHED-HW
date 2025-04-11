@@ -47,9 +47,9 @@ public class Process {
     public String toString() {
         return "Process{" +
                 "id=" + id +
+                ", arrival=" + arrival +
                 ", burst=" + burst +
                 ", priority=" + priority +
-                ", arrival=" + arrival +
                 '}';
     }
 }
