@@ -24,7 +24,10 @@ public class Gantt{
         return this;
     }
     /*
-    */
+     *
+     *
+     *
+     */
     public String toCSV(String algoName){
         StringBuilder sb = new StringBuilder(algoName + '\n');
         //construct header
@@ -171,6 +174,7 @@ public class Gantt{
 
                     case RUNNING:           //is running this instant
                         if(!response){      //if it hadn't responded yet, now it has
+                            this.procTable[i][this.RESP]++;
                             response = true;
                         }
                         this.procTable[i][this.EXEC]++;
