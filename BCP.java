@@ -3,17 +3,17 @@ public class BCP {
     private int id;
     private int burst;
     private int priority;
-    private int start;
+    private int arrival;
     private int wait;
     private int exec;
     private int resp;
     private int state;
     private Process process;
 
-    public BCP(Process process, int priority, int start) {
+    public BCP(Process process, int priority, int arrival) {
         this.process = process;
         this.priority = priority;
-        this.start = start;
+        this.arrival = arrival;
 
         this.id = process.getId();
         this.burst = process.getBurst();
@@ -35,8 +35,8 @@ public class BCP {
         return priority;
     }
 
-    public int getStart() {
-        return start;
+    public int getarrival() {
+        return arrival;
     }
 
     public int getWait() {
@@ -71,8 +71,8 @@ public class BCP {
         this.priority = priority;
     }
 
-    public void setStart(int start) {
-        this.start = start;
+    public void setarrival(int arrival) {
+        this.arrival = arrival;
     }
 
     public void setWait(int wait) {
