@@ -1,14 +1,10 @@
 public class Process {
     private int id;
-    private int burst;  
-    private int priority;
-    private int arrival; 
+    private int burst;
 
-    public Process(int id, int burst, int priority, int arrival) {
+    public Process(int id, int burst) {
         this.id = id;
         this.burst = burst;
-        this.priority = priority;
-        this.arrival = arrival;
     }
 
     public int getId() {
@@ -27,30 +23,11 @@ public class Process {
         this.burst = burst;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public int getArrival() {
-        return arrival;
-    }
-
-    public void setArrival(int arrival) {
-        this.arrival = arrival;
-    }
-
     @Override
     public String toString() {
         return "Process{" +
                 "id=" + id +
-                ", arrival=" + arrival +
                 ", burst=" + burst +
-                ", priority=" + priority +
                 '}';
     }
 }
-
