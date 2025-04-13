@@ -1,5 +1,5 @@
 import java.util.LinkedList;
 
 public interface Algorithm {
-	public BCP apply(LinkedList bcpList, int time);
+	public BCP apply(LinkedList<BCP> bcpList, int time);
 }

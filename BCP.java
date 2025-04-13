@@ -95,9 +95,6 @@ public class BCP {
 
     public void Reset() {
         this.burst = process.getBurst();
-        this.wait = 0;
-        this.exec = 0;
-        this.resp = 0;
         this.state = State.READY;
     }
 }
