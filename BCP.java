@@ -33,8 +33,16 @@ public class BCP {
         return priority;
     }
 
-    public int getarrival() {
+    public int getArrival() {
         return arrival;
+    }
+
+    public int getStartTime(){
+        return this.startTime;
+    }
+
+    public int getTerminationTime(){
+        return this.endTime();
     }
 
     public int getWait() {
