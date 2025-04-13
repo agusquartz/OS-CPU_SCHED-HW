@@ -1,10 +1,16 @@
 public class Process {
     private int id;
     private int burst;
+    private String name;
 
-    public Process(int id, int burst) {
+    public Process(int id, int burst, String name) {
         this.id = id;
         this.burst = burst;
+        this.name = name;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
     public int getId() {
