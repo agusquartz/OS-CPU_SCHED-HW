@@ -33,15 +33,17 @@ public class Parser {
             // Extract the relevant attributes
             int id = i - 1; // Use (index - 1) for unique ID
             
+            //   columns[0] = Process Name
             //   columns[1] = arrival time
             //   columns[2] = CPU burst time
             //   columns[3] = priority
+            String name = columns[0];
             int arrival = Integer.parseInt(columns[1].trim());
             int burst = Integer.parseInt(columns[2].trim());
             int priority = Integer.parseInt(columns[3].trim());
 
             // Create a Process object with id and burst
-            Process newProcess = new Process(id, burst);
+            Process newProcess = new Process(id, burst, name);
 
             // Create a BCP object for the process
             BCP newBCP = new BCP(newProcess, priority, arrival);

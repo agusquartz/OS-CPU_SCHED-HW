@@ -1,12 +1,12 @@
 
 public class GanttEntry {
 
-    public GanttEntry(String id, int start){
+    public GanttEntry(int id, int start){
         this.processId = id;
         this.startTime = start;
     }
 
-    public String getId(){
+    public int getId(){
         return this.processId;
     }
 
@@ -18,7 +18,7 @@ public class GanttEntry {
         return this.endTime;
     }
 
-    public void setId(String id){
+    public void setId(int id){
         this.processId = id;
     }
 

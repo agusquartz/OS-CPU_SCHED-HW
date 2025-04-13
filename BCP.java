@@ -21,6 +21,10 @@ public class BCP {
         this.state = State.READY;   //all processes arrive READY. No time for NEW
     }
 
+    public int getStartTime(){
+        return this.startTime;
+    }
+
     public int getId() {
         return id;
     }
@@ -33,7 +37,7 @@ public class BCP {
         return priority;
     }
 
-    public int getarrival() {
+    public int getArrival() {
         return arrival;
     }
 
