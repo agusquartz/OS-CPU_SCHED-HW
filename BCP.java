@@ -4,10 +4,10 @@ public class BCP {
     private int burst;
     private int priority;
     private int arrival;
-    private int wait;
-    private int exec;
-    private int resp;
-    private int state;
+    private int startTime;
+    private int endTime;
+    private int remainingTime;
+    private State state;
     private Process process;
 
     public BCP(Process process, int priority, int arrival) {
@@ -17,10 +17,8 @@ public class BCP {
 
         this.id = process.getId();
         this.burst = process.getBurst();
-        this.wait = 0;
-        this.exec = 0;
-        this.resp = 0;
-        this.state = 0;
+        this.remainingTime = this.burst;    //a lot of work remaining!
+        this.state = State.READY;   //all processes arrive READY. No time for NEW
     }
 
     public int getId() {
@@ -40,23 +38,27 @@ public class BCP {
     }
 
     public int getWait() {
-        return wait;
+        return getExec() - this.burst;
     }
 
     public int getExec() {
-        return exec;
+        return this.endTime - this.arrival;
     }
 
     public int getResp() {
-        return resp;
+        return this.startTime - this.arrival;
     }
 
-    public int getState() {
-        return state;
+    public State getState() {
+        return this.state;
     }
 
     public Process getProcess() {
         return process;
+    }
+
+    public int getRemainingTime(){
+        return remainingTime;
     }
 
     public void setId(int id) {
@@ -75,19 +77,7 @@ public class BCP {
         this.arrival = arrival;
     }
 
-    public void setWait(int wait) {
-        this.wait = wait;
-    }
-
-    public void setExec(int exec) {
-        this.exec = exec;
-    }
-
-    public void setResp(int resp) {
-        this.resp = resp;
-    }
-
-    public void setState(int state) {
+    public void setState(State state) {
         this.state = state;
     }
 
@@ -95,11 +85,15 @@ public class BCP {
         this.process = process;
     }
 
+    public void setRemainingTime(int remaining){
+        this.remainingTime = remaining;
+    }
+
     public void Reset() {
         this.burst = process.getBurst();
         this.wait = 0;
         this.exec = 0;
         this.resp = 0;
-        this.state = 0;
+        this.state = State.READY;
     }
 }
