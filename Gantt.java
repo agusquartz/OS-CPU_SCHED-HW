@@ -1,9 +1,11 @@
 public class Gantt{
 
     /* Constructor */
-    public Gantt(Process[] procList){
-        this.procList = procList;
+    public Gantt(int totalburst, int numberOfProcesses){
+        this.totalBursts = totalburst;
+        this.nProcess = numberOfProcesses;
     }	
+    
 
     /* Populates gantt array */
     public Gantt generate(Algorithm a){
@@ -107,18 +109,6 @@ public class Gantt{
      *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    /* Calculate total number of bursts. Adds all bursts from all 
-     * processes, and returns the total. It's used to determine the 
-     * number of columns in our gantt chart
-     */
-    private int calculateBursts(Process[] procs){
-        int totalBursts = 0;
-        for(int i = 0; i < procs.length; i++){
-            totalBursts += procs[i].getBurst();
-        }
-        return totalBursts;
-    }
-
     /* 
      * This method fills the processes table with info from the list 
      * We use this info to feed the algorithms while creating the 
@@ -203,6 +193,7 @@ public class Gantt{
     private Process[] procList; 
     private double[] averages;
     private int totalBursts;
+    private int nProcess;
     //constants for array indexing
     public static final int PROC_TABLE_FIELDS = 7;
     public static final int ID = 0;
