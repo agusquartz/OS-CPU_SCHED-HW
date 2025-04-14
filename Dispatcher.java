@@ -1,32 +1,85 @@
 import java.util.LinkedList;
 public class Dispatcher {
     /* Constructor */
-    public Dispatcher(LinkedList<BCP> bcpList){
-        this.list = bcpList;
+    public Dispatcher(LinkedList<BCP> bcpList, Gantt chart){
+        this.processList = bcpList;
+        this.chart = chart;
     }
     /* Run well... 'runs' the algorithm and fills the Gantt chart, then returns the String form of this chart
      */
-    public String run(Algorithm a){
-        this.totalBursts = calculateTotalBursts(this.list);
-        this.nproc = this.list.size();
-        Gantt g = new Gantt(this.totalBursts, this.nproc);
-        for(int i = 0; i < this.totalBursts; i++){
-            g.setInstant(a.apply(this.list,i),i);
+    public boolean run(Algorithm a){
+        //simulates time
+        //set up the loop
+        int currentTime = 0;
+        BCP executing = a.apply(this.processList, currentTime);    //get first process to run
+        executing.setState(State.RUNNING);  //this process starts RUNNING in the first instant
+        executing.setFirstTime(currentTime);    //store in the BCP when this process started running
+        GanttEntry e = new GanttEntry(executing.getId(), currentTime);  //create a GanttEntry for this execution burst
+        while(!allProcessesTerminated(this.processList)){
+            //at each time run the algorithm
+            executing = a.apply(this.processList,currentTime);
+            //has the running process changed?
+            if((executing.getState() == State.READY) || (executing.getState() == State.WAITING)){
+                //yes then close current GanttEntry
+                e.setEndTime(currentTime);
+                this.chart.addEntry(e);
+                //create a new GanttEntry with current executing processId
+                e = new GanttEntry(executing.getId(), currentTime);
+            }
+            //save curTime
+            int timeBeforeUpdate = currentTime;
+            //increment currentTime
+            currentTime++;
+            //update the executing process bcp
+            updateBCP(executing, timeBeforeUpdate);
         }
-        return g.toCSV();
+        //close last GanttEntry
+        e.setEndTime(currentTime);
+        this.chart.addEntry(e);
+        //all processes have terminated
+        //return the GanttChar in csv form
+        return true;
     }
 
-    //Private methods
-    private int calculateTotalBurst(LinkedList<BCP> list){
-        int total = 0;
-        for(BCP bcp : list){
-            total += bcp.getBurst();
+    //private methods
+    private void updateBCP(BCP b, int instant){
+        switch (b.getState()){
+            case READY:   //if the process just started
+                b.setState(State.RUNNING);   //change its state to RUNNING
+                b.setFirstTime(instant);     //store its startTime in the bcp
+                break;
+            case RUNNING: //if the process was already executing
+            case WAITING: //if the process is comming back from waiting
+                b.setState(State.RUNNING);   //change its state back to RUNNING
+                break;
+            default:
+                //shouldnt get here.
+                System.out.println("There has been a serious mistake");
+                break;
         }
-        return total;
+        if(b.getState() == State.RUNNING && b.getRemainingTime() > 0){
+            //anyways decrease remainingTime
+            b.setRemainingTime(b.getRemainingTime() - 1);
+        }
+        if(b.getRemainingTime() == 0 && b.getState() == State.RUNNING){   //if remainingTime is now 0
+            b.setState(State.TERMINATED); //set its state to TERMINATED
+            b.setTerminationTime(instant + 1); //store its endTime in the bcp
+        }
+        return;
     }
+
+    private boolean allProcessesTerminated(LinkedList<BCP> processes){
+        for(BCP b : processes){
+            if(b.getState() != State.TERMINATED){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     //Private attributes
-    private int totalBursts;
-    private int nproc;
-    private LinkedList<> list;
+    private LinkedList<BCP> processList;
+    private Gantt chart;
+    int currentTime;
 }
