@@ -17,7 +17,17 @@ public class Dispatcher {
         GanttEntry e = new GanttEntry(executing.getId(), currentTime);  //create a GanttEntry for this execution burst
         while(!allProcessesTerminated(this.processList)){
             //at each time run the algorithm
-            executing = a.apply(this.processList,currentTime);
+            BCP newExecuting = a.apply(this.processList,currentTime);
+
+            // Verification of next BCP
+            if(newExecuting != executing) {
+                
+                if(executing.getState() == State.RUNNING) {
+                    executing.setState(State.READY);
+                }
+            }
+            executing = newExecuting;
+
             //has the running process changed?
             if((executing.getState() == State.READY) || (executing.getState() == State.WAITING)){
                 //yes then close current GanttEntry
