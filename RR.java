@@ -44,6 +44,8 @@ public class RR implements Algorithm {
                     it.remove();
                     // add the BCP to the last position
                     bcpList.add(bcp);
+
+                    currentQuantum = quantum;
                     break;
                 }
             }
