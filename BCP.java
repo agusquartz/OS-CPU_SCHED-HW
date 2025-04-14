@@ -41,12 +41,12 @@ public class BCP {
         return arrival;
     }
 
-    public int getStartTime(){
+    public int getFirstTime(){
         return this.startTime;
     }
 
     public int getTerminationTime(){
-        return this.endTime();
+        return this.endTime;
     }
 
     public int getWait() {
@@ -58,7 +58,7 @@ public class BCP {
     }
 
     public int getResp() {
-        return this.startTime - this.arrival;
+        return getWait() + 1;
     }
 
     public State getState() {
@@ -85,7 +85,7 @@ public class BCP {
         this.priority = priority;
     }
 
-    public void setarrival(int arrival) {
+    public void setArrival(int arrival) {
         this.arrival = arrival;
     }
 
@@ -100,9 +100,20 @@ public class BCP {
     public void setRemainingTime(int remaining){
         this.remainingTime = remaining;
     }
+    
+    public void setFirstTime(int execStart){
+        this.startTime = execStart;
+    }
+    
+    public void setTerminationTime(int termination){
+        this.endTime = termination;
+    }
 
-    public void Reset() {
+    public void reset() {
         this.burst = process.getBurst();
+        this.startTime = 0;
+        this.endTime = 0;
+        this.remainingTime = this.burst;
         this.state = State.READY;
     }
 }
