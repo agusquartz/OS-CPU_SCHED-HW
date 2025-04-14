@@ -110,7 +110,6 @@ public class BCP {
     }
 
     public void reset() {
-        this.burst = process.getBurst();
         this.startTime = 0;
         this.endTime = 0;
         this.remainingTime = this.burst;

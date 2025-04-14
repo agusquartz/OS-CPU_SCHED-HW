@@ -21,16 +21,25 @@ public class Main{
             fileManager.appendToFile(gantt.toCSV("FCFS"));
         }
         resetAll(BCPList);
-        if (dispatcher.run(rr)){
-            fileManager.appendToFile(gantt.toCSV("RR"));
+
+        Gantt gantt2 = new Gantt(BCPList);
+        Dispatcher dispatcher2 = new Dispatcher(BCPList, gantt2);
+        if (dispatcher2.run(sjf)){
+            fileManager.appendToFile(gantt2.toCSV("SJF"));
         }
         resetAll(BCPList);
-        if (dispatcher.run(sjfe)){
-            fileManager.appendToFile(gantt.toCSV("SJFE"));
+
+        Gantt gantt3 = new Gantt(BCPList);
+        Dispatcher dispatcher3 = new Dispatcher(BCPList, gantt3);
+        if (dispatcher3.run(sjfe)){
+            fileManager.appendToFile(gantt3.toCSV("SJFE"));
         }
         resetAll(BCPList);
-        if (dispatcher.run(sjf)){
-            fileManager.appendToFile(gantt.toCSV("SJF"));
+
+        Gantt gantt4 = new Gantt(BCPList);
+        Dispatcher dispatcher4 = new Dispatcher(BCPList, gantt4);
+        if (dispatcher4.run(rr)){
+            fileManager.appendToFile(gantt4.toCSV("RR"));
         }
 
 
