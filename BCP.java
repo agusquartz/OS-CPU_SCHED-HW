@@ -7,6 +7,7 @@ public class BCP {
     private int startTime;
     private int endTime;
     private int remainingTime;
+    private double ratio;
     private State state;
     private Process process;
 
@@ -19,6 +20,10 @@ public class BCP {
         this.burst = process.getBurst();
         this.remainingTime = this.burst;    //a lot of work remaining!
         this.state = State.READY;   //all processes arrive READY. No time for NEW
+    }
+
+    public double getRatio(){
+        return this.ratio;
     }
 
     public int getStartTime(){
@@ -71,6 +76,10 @@ public class BCP {
 
     public int getRemainingTime(){
         return remainingTime;
+    }
+
+    public void setRatio(double ratio){
+        this.ratio = ratio;
     }
 
     public void setId(int id) {
