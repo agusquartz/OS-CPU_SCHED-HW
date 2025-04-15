@@ -2,9 +2,15 @@ import java.util.LinkedList;
 
 
 public class Priority implements Algorithm {
+    private BCP last;
 
     @Override
     public BCP apply(LinkedList<BCP> bcpList, int currentTime){
+
+        if (null != last && last.getRemainingTime() > 0){
+            return last;
+        }
+
         LinkedList<BCP> eligibleBCPs = new LinkedList<>();
 
         for (BCP bcp : bcpList) {
@@ -23,6 +29,8 @@ public class Priority implements Algorithm {
                 selectedBCP = bcp;
             }
         }
+
+        last = selectedBCP;
 
         return selectedBCP;
     }
