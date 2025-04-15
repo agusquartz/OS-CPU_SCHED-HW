@@ -12,6 +12,12 @@ public class Dispatcher {
         //set up the loop
         int currentTime = 0;
         BCP executing = a.apply(this.processList, currentTime);    //get first process to run
+
+        if (executing == null) {
+            System.out.println("Dispatcher: el algoritmo no devolvió ningún proceso para ejecutar.");
+            return false;
+        }
+
         executing.setState(State.RUNNING);  //this process starts RUNNING in the first instant
         executing.setFirstTime(currentTime);    //store in the BCP when this process started running
         GanttEntry e = new GanttEntry(executing.getId(), currentTime);  //create a GanttEntry for this execution burst
