@@ -27,6 +27,10 @@ public class HRRN implements Algorithm{
             }
         }
 
+        if (eligibleBCPs.isEmpty()){
+            return null;
+        }
+
         for (BCP bcp : eligibleBCPs) {
             bcp.setRatio( calculateRatio(bcp, currentTime));
             bcps.add(bcp);
