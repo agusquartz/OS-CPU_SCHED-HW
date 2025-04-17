@@ -118,6 +118,13 @@ public class BCP {
         this.endTime = termination;
     }
 
+    public boolean equals(BCP proc){
+        if(proc != null){
+            return this.getId() == proc.getId();
+        }
+        return false;
+    }
+
     public void reset() {
         this.startTime = 0;
         this.endTime = 0;
