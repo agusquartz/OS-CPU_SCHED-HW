@@ -1,105 +1,103 @@
 import java.util.LinkedList;
 public class Dispatcher {
+
     /* Constructor */
     public Dispatcher(LinkedList<BCP> bcpList, Gantt chart){
         this.processList = bcpList;
         this.chart = chart;
     }
+
     /* Run well... 'runs' the algorithm and fills the Gantt chart, then returns the String form of this chart
     */
+
     public boolean run(Algorithm a){
-        //simulates time
-        //set up the loop
-        int currentTime = 0;    //inicia el tiempo
-        BCP executing = a.apply(this.processList, currentTime);    //get first process to run
-        boolean firstTime = true; //in case we dont execute since the instant 0, keep track of when is the first time we process
-        GanttEntry e = null; //initialize GanttEntry to something
+        //set time
+        int time = 0; 
+        //this variables are for handling processes inside the loop
+        BCP prev, cur = null;
+        //this is the entry where we log changes on who's executing when
+        GanttEntry e = null;
 
-        if(!(executing == null)){   //if we receive a process in instant 0
-            executing.setState(State.RUNNING);  //this process starts RUNNING in the first instant
-            executing.setFirstTime(currentTime);    //store in the BCP when this process started running
-            e = new GanttEntry(executing.getId(), currentTime);  //create a GanttEntry for this execution burst
-            firstTime = false;  //we started executing since instant 0, so firstTime is unnecesary
+        //as long as there are processes to be run
+        while(!allProcessesTerminated(this.processList)){
+            //replace prev with new prev
+            prev = cur;
+            //get new process
+            cur = a.apply(this.processList, time);
+            //update BCPs
+            updateBCP(prev, cur, time);
+            //log things
+            e = manageGanttEntries(e, prev, cur, time);
+            //advance in time
+            time++;
         }
-        while(!allProcessesTerminated(this.processList)){   //so long as there are still processes to work on
-            //at each time run the algorithm
-            BCP newExecuting = a.apply(this.processList,currentTime);   //get the process to work on
-            if (newExecuting == null) { //if we don't have a process at this instant
-                currentTime++;  //in cases where there is no process at this time
-            }else{
-                if(firstTime){  //is this the first loop with a process to work on?
-                    e = new GanttEntry(newExecuting.getId(),currentTime);   //yes, create a Gantt Entry
-                    firstTime = false;  //now firstTime is unnecesary
-                }
-                // Verification of next BCP
-                if(newExecuting != executing && executing != null) { //is the process we got now, different to the one  we were working on last time?
-                    if(executing.getState() == State.RUNNING) { //if we were working on something, and we expulsed it
-                        executing.setState(State.READY);    //make sure the other process can come back
-                        e.setEndTime(currentTime);  //log the work we did
-                        this.chart.addEntry(e);
-                    }else{  //we have finished our work
-                    e.setEndTime(executing.getTerminationTime());  //log the work we did
-                    this.chart.addEntry(e);
-                    }
-                    e = new GanttEntry(newExecuting.getId(), currentTime);
-                }
-                executing = newExecuting;   //the current process is now the one we just got
-                                            
-                //save curTime
-                int timeBeforeUpdate = currentTime;
-                //increment currentTime
-                currentTime++;
-                //update the executing process bcp
-                updateBCP(executing, timeBeforeUpdate);
-                System.out.println("Bucle N°: "+currentTime);
-                chart.getEntries().stream().forEach(m -> System.out.println(m.getId()+" "+m.getStartTime()+" "+m.getEndTime()+"."+m.toString()));
-            }
-        }
-                //close last GanttEntry
-                e.setEndTime(executing.getTerminationTime());
-                this.chart.addEntry(e);
-                System.out.println("Bucle N°: "+currentTime);
-                chart.getEntries().stream().forEach(m -> System.out.println(m.getId()+" "+m.getStartTime()+" "+m.getEndTime()+"."+m.toString()));
-
-        //all processes have terminated
-        //return the GanttChar in csv form
         return true;
     }
 
+
+
     //private methods
-    private void updateBCP(BCP b, int instant){
-        switch (b.getState()){
-            case READY:   //if the process just started
-                b.setState(State.RUNNING);   //change its state to RUNNING
-                b.setFirstTime(instant);     //store its startTime in the bcp
-                break;
-            case RUNNING: //if the process was already executing
-            case WAITING: //if the process is comming back from waiting
-                b.setState(State.RUNNING);   //change its state back to RUNNING
-                break;
-            default:
-                //shouldnt get here.
-                System.out.println("There has been a serious mistake");
-                break;
+    private void updateBCP(BCP prev, BCP cur, int instant){
+
+        //check if there is a process executing this instant
+        if(cur != null){
+            //check if cur is executing for the first time
+            if(cur.getBurst() == cur.getRemainingTime()){
+                cur.setFirstTime(instant);
+            }
+            //decrease its remaining time
+            cur.setRemainingTime(cur.getRemainingTime()-1);
+            //set its state to RUNNING
+            cur.setState(State.RUNNING);
         }
-        if(b.getState() == State.RUNNING && b.getRemainingTime() > 0){
-            //anyways decrease remainingTime
-            b.setRemainingTime(b.getRemainingTime() - 1);
-        }
-        if(b.getRemainingTime() == 0 && b.getState() == State.RUNNING){   //if remainingTime is now 0
-            b.setState(State.TERMINATED); //set its state to TERMINATED
-            b.setTerminationTime(instant + 1); //store its endTime in the bcp
+
+        //check if there was a process executing before this instant
+        if(prev != null){
+            //check if prev has terminated
+            if(prev.getRemainingTime() == 0){
+                prev.setTerminationTime(instant-1); //because prev did its last work the previous loop 
+                prev.setState(State.TERMINATED);
+            } else {
+                //if it hasn't, make sure it comes back
+                prev.setState(State.WAITING);
+            }
         }
         return;
     }
 
-    private boolean allProcessesTerminated(LinkedList<BCP> processes){
-        for(BCP b : processes){
-            if(b.getState() != State.TERMINATED){
-                return false;
-            }
+    private GanttEntry manageGanttEntries(GanttEntry e, BCP prev, BCP cur, int instant){
+        //check if both elements are null
+        if((cur == null)&&(prev == null)){
+            return null; //this is a special case of the last clause, in that both processes are the same, so there was no
+                         //change in who was using the processor (no one) so there is nothing to log
         }
-        return true;
+        //if nothing was executing before
+        if(prev == null && cur != null){
+            e = new GanttEntry(cur.getId(), instant); //create a new entry 
+        }
+        //if nothing is executing now
+        else if (cur == null){
+            e.setEndTime(instant);     //close old entry
+            this.chart.addEntry(e);     //add it to the chart
+            e = null;           //as nothing is executing, do not log anything
+        }
+        //if we got here, it's two different processes back to back
+        //check if current process is different to previous process
+        //no need to log any changes if prev and cur are the same after all
+        else if(!cur.equals(prev)){
+            if(e != null){
+                e.setEndTime(instant);    //close old entry
+                this.chart.addEntry(e);     //add it to the chart
+            }
+            e = new GanttEntry(cur.getId(), instant);   //create a new entry
+        }
+        return e;
+    }
+
+
+
+    private boolean allProcessesTerminated(LinkedList<BCP> processes){
+        return processes.stream().allMatch(p -> p.getState() == State.TERMINATED);
     }
 
 
