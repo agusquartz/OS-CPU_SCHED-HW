@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main{
     public static LinkedList<BCP> BCPList;
@@ -52,13 +53,7 @@ public class Main{
 
 
     }
-
-    public static void programLogic(
-        List<View.EnumAlgo> normalEnumAlgo, 
-        View.EnumAlgo[] multiLevelEnumAlgos,
-        int quantum,
-        int[] quantumByLevel){
-
+    public static void executeSerial(List<View.EnumAlgo> normalEnumAlgo, int quantum){
         String algoName;
         // Process normal algorithms only if the list is not null and not empty
         if (normalEnumAlgo != null && !normalEnumAlgo.isEmpty()) {
@@ -94,33 +89,50 @@ public class Main{
                 }
             }
         }
+    }
 
+
+    public static void programLogic( List<View.EnumAlgo> normalEnumAlgo, View.EnumAlgo[] multiLevelEnumAlgos,int quantum, int[] quantumByLevel){
+        executeSerial(normalEnumAlgo,quantum);
+        executeMultiLevel(multiLevelEnumAlgos,quantumByLevel);
+    }
+
+    public static void executeMultiLevel(View.EnumAlgo[] multiLevelEnumAlgos, int[] quantumByLevel){
         // Process multi-level queue algorithms if the array is not null and not empty
         // SOMETHING IS WRONG HERE, 
+
+        String algoName;
         LinkedList<BCP> filteredBCPs;
         View view = View.getInstance();
+
+        for(View.EnumAlgo e : multiLevelEnumAlgos){
+            System.out.println(e);
+        }
         if (multiLevelEnumAlgos != null && multiLevelEnumAlgos.length > 0) {
             for (int i = 0; i < 3; i++) {
-                if (multiLevelEnumAlgos[i] == view.EnumAlgo.FCFS) {
+                filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
+                if (multiLevelEnumAlgos[i] == View.EnumAlgo.FCFS) {
+                    //    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": FCFS";
-                    startJob(Main.BCPList, algoName, new FCFS());
-                } else if (multiLevelEnumAlgos[i] == view.EnumAlgo.SJF_EXPULSIVO) {
-                    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
+                    filteredBCPs.stream().forEach(b -> System.out.println(b.getProcess().getName()));
+                    startJob(filteredBCPs, algoName, new FCFS());
+                } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.SJF_EXPULSIVO) {
+                    //   filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": SJF_Expulsivo";
                     startJob(filteredBCPs, algoName, new SJFE());
-                } else if (multiLevelEnumAlgos[i] == view.EnumAlgo.SJF_NO_EXPULSIVO) {
+                } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.SJF_NO_EXPULSIVO) {
                     filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": SJF_NoExpulsivo";
                     startJob(filteredBCPs, algoName, new SJF());
-                } else if (multiLevelEnumAlgos[i] == view.EnumAlgo.PRIORIDAD) {
+                } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.PRIORIDAD) {
                     filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": Priority";
                     startJob(filteredBCPs, algoName, new Priority());
-                } else if (multiLevelEnumAlgos[i] == view.EnumAlgo.ROUND_ROBIN) {
+                } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.ROUND_ROBIN) {
                     filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": RR (" + quantumByLevel[i] + ")";
                     startJob(filteredBCPs, algoName, new RR(quantumByLevel[i]));
-                } else if (multiLevelEnumAlgos[i] == view.EnumAlgo.HRRN) {
+                } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.HRRN) {
                     filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": HRRN";
                     startJob(filteredBCPs, algoName, new HRRN());
@@ -128,12 +140,13 @@ public class Main{
                     // Do nothing for NONE or unexpected value
                 }
             }
+
         }
     }
 
-    public static void startJob(LinkedList<BCP> BCPList, String algoName, Algorithm algo){
-        Gantt gantt = new Gantt(BCPList);
-        Dispatcher dispatcher = new Dispatcher(BCPList, gantt);
+    public static void startJob(LinkedList<BCP> _BCPList, String algoName, Algorithm algo){
+        Gantt gantt = new Gantt(_BCPList);
+        Dispatcher dispatcher = new Dispatcher(_BCPList, gantt);
         FileManager fileManager = FileManager.getInstance();
 
         if (dispatcher.run(algo)){
@@ -143,15 +156,7 @@ public class Main{
     }
 
     private static LinkedList<BCP> filterListByPrio(LinkedList<BCP> bcps, int num){
-        LinkedList<BCP> eligibleBCPs = new LinkedList<>();
-
-        for (BCP bcp : bcps) {
-            if (bcp != null && bcp.getPriority() == num) {
-                eligibleBCPs.add(bcp);
-            }
-        }
-
-        return eligibleBCPs;
+        return bcps.stream().filter(b -> b.getPriority() == num).collect(Collectors.toCollection(LinkedList::new));
     }
 
     private static void resetAll(LinkedList<BCP> list){
