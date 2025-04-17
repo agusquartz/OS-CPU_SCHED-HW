@@ -63,7 +63,7 @@ public class BCP {
     }
 
     public int getResp() {
-        return getWait() + 1;
+        return getFirstTime() - getArrival();
     }
 
     public State getState() {
