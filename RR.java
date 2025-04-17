@@ -59,6 +59,7 @@ public class RR implements Algorithm {
         BCP currentBCP = eligibleBCPs.get(0);
         if (currentBCP.getRemainingTime() < currentQuantum && !firstTime2){
             this.currentQuantum = currentBCP.getRemainingTime();
+            firstTime2 = false;
         } else {
             firstTime2 = false;
         }
