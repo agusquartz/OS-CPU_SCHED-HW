@@ -81,6 +81,9 @@ public class Gantt{
         }
         return false;
     }
+    public ArrayList<GanttEntry> getEntries(){
+        return this.entries;
+    }
 
     //private attributes
     private ArrayList<GanttEntry> entries;
