@@ -75,7 +75,7 @@ public class Gantt{
 
     private boolean isRunningAtTime(BCP proc, int instant){
         for(GanttEntry e : entries){
-            if(e.getId() == proc.getId() && instant >= e.getStartTime() && instant < e.getEndTime()){
+            if(e.getId() == proc.getId() && instant >= e.getStartTime() && instant <= e.getEndTime()){
                 return true;
             }
         }
