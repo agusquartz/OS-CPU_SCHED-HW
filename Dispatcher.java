@@ -14,7 +14,8 @@ public class Dispatcher {
         //set time
         int time = 0; 
         //this variables are for handling processes inside the loop
-        BCP prev, cur = null;
+        BCP prev = null;
+        BCP cur = null;
         //this is the entry where we log changes on who's executing when
         GanttEntry e = null;
 
@@ -55,7 +56,7 @@ public class Dispatcher {
         if(prev != null){
             //check if prev has terminated
             if(prev.getRemainingTime() == 0){
-                prev.setTerminationTime(instant-1); //because prev did its last work the previous loop 
+                prev.setTerminationTime(instant); //because prev did its last work the previous loop 
                 prev.setState(State.TERMINATED);
             } else {
                 //if it hasn't, make sure it comes back
@@ -68,11 +69,11 @@ public class Dispatcher {
     private GanttEntry manageGanttEntries(GanttEntry e, BCP prev, BCP cur, int instant){
         //check if both elements are null
         if((cur == null)&&(prev == null)){
-            return null; //this is a special case of the last clause, in that both processes are the same, so there was no
+            e =  null; //this is a special case of the second to last clause, in that both processes are the same, so there was no
                          //change in who was using the processor (no one) so there is nothing to log
         }
         //if nothing was executing before
-        if(prev == null && cur != null){
+        else if(prev == null && cur != null){
             e = new GanttEntry(cur.getId(), instant); //create a new entry 
         }
         //if nothing is executing now
@@ -90,6 +91,12 @@ public class Dispatcher {
                 this.chart.addEntry(e);     //add it to the chart
             }
             e = new GanttEntry(cur.getId(), instant);   //create a new entry
+        }
+        //if we got here, check if this is the last of our processes
+        else if(cur.getState() == State.TERMINATED){
+            e.setEndTime(instant);
+            this.chart.addEntry(e);
+            e = null;
         }
         return e;
     }
