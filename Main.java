@@ -99,7 +99,6 @@ public class Main{
 
     public static void executeMultiLevel(View.EnumAlgo[] multiLevelEnumAlgos, int[] quantumByLevel){
         // Process multi-level queue algorithms if the array is not null and not empty
-        // SOMETHING IS WRONG HERE, 
 
         String algoName;
         LinkedList<BCP> filteredBCPs;
@@ -114,26 +113,25 @@ public class Main{
                 if (multiLevelEnumAlgos[i] == View.EnumAlgo.FCFS) {
                     //    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": FCFS";
-                    filteredBCPs.stream().forEach(b -> System.out.println(b.getProcess().getName()));
                     startJob(filteredBCPs, algoName, new FCFS());
                 } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.SJF_EXPULSIVO) {
                     //   filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": SJF_Expulsivo";
                     startJob(filteredBCPs, algoName, new SJFE());
                 } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.SJF_NO_EXPULSIVO) {
-                    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
+                    //filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": SJF_NoExpulsivo";
                     startJob(filteredBCPs, algoName, new SJF());
                 } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.PRIORIDAD) {
-                    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
+                    //filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": Priority";
                     startJob(filteredBCPs, algoName, new Priority());
                 } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.ROUND_ROBIN) {
-                    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
+                    //filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": RR (" + quantumByLevel[i] + ")";
                     startJob(filteredBCPs, algoName, new RR(quantumByLevel[i]));
                 } else if (multiLevelEnumAlgos[i] == View.EnumAlgo.HRRN) {
-                    filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
+                    //filteredBCPs = filterListByPrio(Main.BCPList, i + 1);
                     algoName = "Queue LvL " + (i+1) + ": HRRN";
                     startJob(filteredBCPs, algoName, new HRRN());
                 } else {
