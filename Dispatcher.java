@@ -56,7 +56,7 @@ public class Dispatcher {
         if(prev != null){
             //check if prev has terminated
             if(prev.getRemainingTime() == 0){
-                prev.setTerminationTime(instant); //because prev did its last work the previous loop 
+                prev.setTerminationTime(instant-1); //because prev did its last work the previous loop 
                 prev.setState(State.TERMINATED);
             } else {
                 //if it hasn't, make sure it comes back
@@ -87,14 +87,14 @@ public class Dispatcher {
         //no need to log any changes if prev and cur are the same after all
         else if(!cur.equals(prev)){
             if(e != null){
-                e.setEndTime(instant);    //close old entry
+                e.setEndTime(instant-1);    //close old entry
                 this.chart.addEntry(e);     //add it to the chart
             }
             e = new GanttEntry(cur.getId(), instant);   //create a new entry
         }
         //if we got here, check if this is the last of our processes
-        else if(cur.getState() == State.TERMINATED){
-            e.setEndTime(instant);
+        else if(allProcessesTerminated(this.processList)){
+            e.setEndTime(instant+1);
             this.chart.addEntry(e);
             e = null;
         }
