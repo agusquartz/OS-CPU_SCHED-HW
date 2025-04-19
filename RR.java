@@ -7,7 +7,6 @@ public class RR implements Algorithm {
     private int quantum;
     private int currentQuantum;
     private boolean firstTime;
-    private boolean firstTime2;
     private boolean lastTime;
     private ArrayList<BCP> bcps;
     private BCP lastBCP;
@@ -23,8 +22,6 @@ public class RR implements Algorithm {
 
     @Override
     public BCP apply(LinkedList<BCP> bcpList, int currentTime){
-        LinkedList<BCP> eligibleBCPs = new LinkedList<>();
-
         /* If it's the first time calling the method, copy the bcpList to our ArrayList
          * Sort the array by arrival, and set "is not first time anymore"
          */
@@ -37,54 +34,62 @@ public class RR implements Algorithm {
             firstTime = false;
         }
 
-        // Filter the list of bcps by those who are not terminated and have already arrived.
-        for (BCP bcp : bcps) {
-            if (!bcp.getState().equals(State.TERMINATED) && bcp.getArrival() <= currentTime && bcp.getRemainingTime() > 0) {
-                eligibleBCPs.add(bcp);
-            }
-        }
+        BCP currentBCP;
+        LinkedList<BCP> eligibleBCPs;
 
-        // If the filtered list is empty, return null
-        if (eligibleBCPs.isEmpty()) {
-            return null;
-        }
-
-        /* If remaining time of current bcp is less than quantum, quantum = remaining time
-         * We'll avoid doing this the first time 'cause there's a possibility that remaining
-         * time is smaller than quantum, and we need to take one from quantum the first time
-         * for a good reason.
-         */
-        BCP currentBCP = eligibleBCPs.get(0);
-        if (null != lastBCP && currentQuantum > 0){
+        if (lastBCP != null && lastBCP.getRemainingTime() > 0){
             currentBCP = lastBCP;
+
+        } else {
+            eligibleBCPs = new LinkedList<>();
+
+            // Filter the list of bcps by those who are not terminated and have already arrived.
+            for (BCP bcp : bcps) {
+                if (!bcp.getState().equals(State.TERMINATED) && bcp.getArrival() <= currentTime && bcp.getRemainingTime() > 0) {
+                    eligibleBCPs.add(bcp);
+                }
+            }
+
+            // If the filtered list is empty, return null
+            if (eligibleBCPs.isEmpty()) {
+                return null;
+            }
+
+            currentBCP = eligibleBCPs.get(0);
         }
-        if (currentBCP.getRemainingTime() < currentQuantum){
-            this.currentQuantum = currentBCP.getRemainingTime();
+
+        if (null != currentBCP && currentBCP.getRemainingTime() < currentQuantum){
+            currentQuantum = currentBCP.getRemainingTime();
         }
+
+        currentQuantum--;
 
         /* If only one element left in our filtered list and the remaining time is less
          * or equals quantum, is gonna be last time dispatcher calls us, so re-order the
          * list by their names.
          */
-        if (1 == eligibleBCPs.size() && currentBCP.getRemainingTime() <= currentQuantum){
+        long currentSize = bcps.stream().filter(bcp -> bcp.getState() != State.TERMINATED).count();
+
+        if (currentSize == 1 && currentBCP.getRemainingTime() <= currentQuantum){
             lastTime = true;
         }
-        currentQuantum--;
 
-        // if quantum is over, move the first element to the end and reset quantum
-        if (0 == currentQuantum){
-            BCP tmp = bcps.remove(0);
-            bcps.add(tmp);
+        if (currentQuantum < 1){
+            bcps.remove(currentBCP);
+            bcps.addLast(currentBCP);
             this.currentQuantum = this.quantum;
+            lastBCP = null;
+        } else {
+            lastBCP = currentBCP;
         }
 
-        // If its the las time, reorder by name
         if (lastTime){
             bcpList.sort((bcp1, bcp2) -> 
                 bcp1.getProcess().getName().compareTo(bcp2.getProcess().getName()));
         }
 
         return currentBCP;
+
     }
 
 }
