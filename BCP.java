@@ -59,7 +59,7 @@ public class BCP {
     }
 
     public int getExec() {
-        return this.endTime - this.arrival;
+        return this.endTime - this.arrival + 1; //plus one 'cause its not counting work done the last time otherwise
     }
 
     public int getResp() {
