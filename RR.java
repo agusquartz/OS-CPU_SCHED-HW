@@ -10,6 +10,7 @@ public class RR implements Algorithm {
     private boolean firstTime2;
     private boolean lastTime;
     private ArrayList<BCP> bcps;
+    private BCP lastBCP;
 
     public RR(int quantum){
         this.quantum = quantum;
@@ -51,10 +52,12 @@ public class RR implements Algorithm {
         /* If remaining time of current bcp is less than quantum, quantum = remaining time
          * We'll avoid doing this the first time 'cause there's a possibility that remaining
          * time is smaller than quantum, and we need to take one from quantum the first time
-         * for a good reason, right now dispatcher always calls the algorithm once before start.
-         * !! I know, this is a huge bug, TALK TO WHO MADE DISPATCHER !!
+         * for a good reason.
          */
         BCP currentBCP = eligibleBCPs.get(0);
+        if (null != lastBCP && currentQuantum > 0){
+            currentBCP = lastBCP;
+        }
         if (currentBCP.getRemainingTime() < currentQuantum){
             this.currentQuantum = currentBCP.getRemainingTime();
         }
@@ -80,7 +83,7 @@ public class RR implements Algorithm {
             bcpList.sort((bcp1, bcp2) -> 
                 bcp1.getProcess().getName().compareTo(bcp2.getProcess().getName()));
         }
-        
+
         return currentBCP;
     }
 
