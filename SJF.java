@@ -4,6 +4,7 @@ public class SJF implements Algorithm {
     private int currentId;
     private int currentQuantum;
     private boolean firstTime;
+    private BCP lastBCP;
 
     @Override
     public BCP apply(LinkedList<BCP> bcpList, int currentTime){
@@ -27,12 +28,17 @@ public class SJF implements Algorithm {
         }
 
         BCP selectedBCP = eligibleBCPs.getFirst();
+        if (null != lastBCP && 0 < lastBCP.getRemainingTime()){
+            selectedBCP = lastBCP;
+            return selectedBCP;
+        }
         for (BCP bcp : eligibleBCPs) {
             if (bcp.getBurst() < selectedBCP.getBurst()) {
                 selectedBCP = bcp;
             }
         }
 
+        lastBCP = selectedBCP;
         return selectedBCP;
     }
 }
