@@ -14,8 +14,8 @@ public class RR implements Algorithm {
     public RR(int quantum){
         this.quantum = quantum;
         this.currentQuantum = quantum;
+
         firstTime = true;
-        firstTime2 = true;
         lastTime = false;
         bcps = new ArrayList<>();
     }
@@ -25,8 +25,7 @@ public class RR implements Algorithm {
         LinkedList<BCP> eligibleBCPs = new LinkedList<>();
 
         /* If it's the first time calling the method, copy the bcpList to our ArrayList
-         * Sort the array by arrival, increase the quantum by one 'cause dispatcher calls
-         * once before start, and finally "is not first time anymore"
+         * Sort the array by arrival, and set "is not first time anymore"
          */
         if (firstTime){
             for (BCP bcp : bcpList){
@@ -34,13 +33,12 @@ public class RR implements Algorithm {
             }
             Collections.sort(bcps, Comparator.comparingInt(BCP::getArrival));
 
-            this.currentQuantum++;
             firstTime = false;
         }
 
         // Filter the list of bcps by those who are not terminated and have already arrived.
         for (BCP bcp : bcps) {
-            if (!bcp.getState().equals(State.TERMINATED) && bcp.getArrival() <= currentTime) {
+            if (!bcp.getState().equals(State.TERMINATED) && bcp.getArrival() <= currentTime && bcp.getRemainingTime() > 0) {
                 eligibleBCPs.add(bcp);
             }
         }
@@ -57,11 +55,8 @@ public class RR implements Algorithm {
          * !! I know, this is a huge bug, TALK TO WHO MADE DISPATCHER !!
          */
         BCP currentBCP = eligibleBCPs.get(0);
-        if (currentBCP.getRemainingTime() < currentQuantum && !firstTime2){
+        if (currentBCP.getRemainingTime() < currentQuantum){
             this.currentQuantum = currentBCP.getRemainingTime();
-            firstTime2 = false;
-        } else {
-            firstTime2 = false;
         }
 
         /* If only one element left in our filtered list and the remaining time is less
