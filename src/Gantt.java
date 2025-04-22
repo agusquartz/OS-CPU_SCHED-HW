@@ -19,6 +19,10 @@ public class Gantt{
      */
     public String toCSV(String algorithmName){
         StringBuilder sb = new StringBuilder("");
+        double avgWait, avgResp, avgExec;
+        avgWait = 0;
+        avgResp = 0;
+        avgExec = 0;
         //calculate totalBursts
         int totalBursts = entries.stream().mapToInt(GanttEntry::getEndTime).max().orElse(0); 
         //Name of our algorithm
@@ -34,7 +38,23 @@ public class Gantt{
         //for each process
         for(BCP b : processes){
             sb.append(generateRow(b, totalBursts));
+            avgWait += b.getWait();
+            avgResp += b.getResp();
+            avgExec += b.getExec();
         }
+        if(processes.size() != 0){
+            avgWait /= processes.size();
+            avgResp /= processes.size();
+            avgExec /= processes.size();
+        }else{
+            System.out.println("There are no processes in this list!");
+        }
+        sb.append(",,,,,");
+        //instants
+        for(int i = 0; i < totalBursts ; i++){
+            sb.append(",");
+        }
+        sb.append("Averages:,"+avgWait+","+avgResp+","+avgExec+"\n"); 
         return sb.toString();
     }
 
