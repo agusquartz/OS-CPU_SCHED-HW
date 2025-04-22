@@ -76,7 +76,7 @@ public class RR implements Algorithm {
 
         if (currentQuantum < 1){
             bcps.remove(currentBCP);
-            bcps.addLast(currentBCP);
+            bcps.add(currentBCP);
             this.currentQuantum = this.quantum;
             lastBCP = null;
         } else {
