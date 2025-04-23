@@ -8,16 +8,21 @@ import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 
 public class View extends JFrame {
 
@@ -39,11 +44,12 @@ public class View extends JFrame {
     private JTextField roundRobinQuantumField;
     private JComboBox<EnumAlgo>[] levelComboBoxes;
     private JTextField[] levelQuantumFields;
+    private LinkedList<BCP> bcps;
 
-    private View(){
+    private View(LinkedList<BCP> bcps){
         setTitle("CPU Scheduling - OSHW");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(550, 500);
+        setSize(800, 500);
         setLocationRelativeTo(null);
 
         normalEnumAlgos = new ArrayList<>();
@@ -59,6 +65,25 @@ public class View extends JFrame {
        
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(new EmptyBorder(10, 0, 10, 10)); 
+
+        // ##### Table on the left #####
+        String[] columnNames = {"id", "arrival", "burst", "priority"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        for (BCP b : bcps) {
+            Object[] row = {
+                b.getProcess().getName(),
+                b.getArrival(),
+                b.getBurst(),
+                b.getPriority()
+            };
+            tableModel.addRow(row);
+        }
+        JTable table = new JTable(tableModel);
+        table.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(300, 0));
+        mainPanel.add(scrollPane, BorderLayout.WEST);
+
 
         // ##### Checkbox Panel (normal selection) #####
         JPanel checkboxPanel = new JPanel();
@@ -257,9 +282,9 @@ public class View extends JFrame {
         return multiLevelEnumAlgos;
     }
 
-    public static View getInstance() {
+    public static View getInstance(LinkedList<BCP> bcps) {
         if (instance == null) {
-            instance = new View();
+            instance = new View(bcps);
         }
         return instance;
     }

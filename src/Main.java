@@ -12,7 +12,7 @@ public class Main{
         Main.BCPList = parser.parse(fileManager.readFile(path));
 
         fileManager.checkOutput();
-        View view = View.getInstance();
+        View view = View.getInstance(Main.BCPList);
 
         /*
         FCFS fcfs = new FCFS();
@@ -102,7 +102,6 @@ public class Main{
 
         String algoName;
         LinkedList<BCP> filteredBCPs;
-        View view = View.getInstance();
 
         for(View.EnumAlgo e : multiLevelEnumAlgos){
             System.out.println(e);
