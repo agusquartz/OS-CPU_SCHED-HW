@@ -1,3 +1,5 @@
+package scheduling;
+import core.*;
 import java.util.LinkedList;
 
 public interface Algorithm {

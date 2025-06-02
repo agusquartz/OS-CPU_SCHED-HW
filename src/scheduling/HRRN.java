@@ -1,3 +1,5 @@
+package scheduling;
+import core.*;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Comparator;

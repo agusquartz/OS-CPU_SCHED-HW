@@ -1,3 +1,6 @@
+package core;
+import scheduling.Algorithm;
+
 import java.util.LinkedList;
 public class Dispatcher {
 

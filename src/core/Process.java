@@ -1,3 +1,5 @@
+package core;
+
 public class Process {
     private int id;
     private int burst;

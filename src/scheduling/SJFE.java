@@ -1,3 +1,5 @@
+package scheduling;
+import core.*;
 import java.util.LinkedList;
 
 public class SJFE implements Algorithm {

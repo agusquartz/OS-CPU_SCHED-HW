@@ -1,3 +1,5 @@
+package core;
+
 
 public class BCP {
     private int id;
