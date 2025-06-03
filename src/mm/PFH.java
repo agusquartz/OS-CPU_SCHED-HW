@@ -12,7 +12,7 @@ public class PageFaultHandler {
      * @param pageTable     The Page Table.
      * @param algorithm    The replacement algorithm to use.
      */
-    public void procesarFallo(int processId, int pageNumber, RAM ram, VirtMem virtMem, PageTable pageTable, Algorithm algorithm) {
+    public void processPageFault(int processId, int pageNumber, Memory ram, Memory virtMem, PageTable pageTable, Algorithm algorithm) {
         if (ram.freeFrameAvailable()) {
 
             // There is a free frame available in RAM
