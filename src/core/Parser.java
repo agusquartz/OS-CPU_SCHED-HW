@@ -38,17 +38,17 @@ public class Parser {
             //   columns[0] = Process Name
             //   columns[1] = arrival time
             //   columns[2] = CPU burst time
-            //   columns[3] = priority
+            //   columns[3] = pages
             String name = columns[0];
             int arrival = Integer.parseInt(columns[1].trim());
             int burst = Integer.parseInt(columns[2].trim());
-            int priority = Integer.parseInt(columns[3].trim());
+            int pages = Integer.parseInt(columns[3].trim());
 
             // Create a Process object with id and burst
-            Process newProcess = new Process(id, burst, name);
+            Process newProcess = new Process(id, burst, pages, name);
 
             // Create a BCP object for the process
-            BCP newBCP = new BCP(newProcess, priority, arrival);
+            BCP newBCP = new BCP(newProcess, 0, arrival);
 
             // Add the BCP object to the linked list
             bcpList.add(newBCP);
