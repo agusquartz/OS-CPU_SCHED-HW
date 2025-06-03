@@ -38,7 +38,7 @@ public class FileManager {
     }
 
     public void appendToFile(String text) {
-        String filePath = "gantt.csv";
+        String filePath = "resultado.csv";
 
         try (FileWriter writer = new FileWriter(filePath, true)) {
             writer.write(text);
@@ -50,7 +50,7 @@ public class FileManager {
     }
 
     public void checkOutput() {
-        File file = new File("gantt.csv");
+        File file = new File("resultado.csv");
 
         try {
             if (file.exists()) {
