@@ -1,6 +1,6 @@
 package mm;
 
-public class PageFaultHandler {
+public class PFH {
 
     /**
      * Handles a page fault for a given process id and page number.
@@ -12,7 +12,7 @@ public class PageFaultHandler {
      * @param pageTable     The Page Table.
      * @param algorithm    The replacement algorithm to use.
      */
-    public void processPageFault(int processId, int pageNumber, Memory ram, Memory virtMem, PageTable pageTable, Algorithm algorithm) {
+    public void processPageFault(int processId, int pageNumber, Memory ram, Memory virtMem, PageTable pageTable, PagingAlgorithm algorithm) {
         if (ram.freeFrameAvailable()) {
 
             // There is a free frame available in RAM
