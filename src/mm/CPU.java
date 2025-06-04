@@ -2,7 +2,7 @@ package mm;
 
 public class CPU {
 
-	public CPU(Memory ram, Memory virtual, PFH pageFaultMngr, PageTable table, PagingAlgorithm algo, LogManager logger){
+	public CPU(Memory ram, Memory virtual, PageTable table, PagingAlgorithm algo, LogManager logger){
 		this.ram = ram;
 		this.virtual = virtual;
 		this.pageFaultMngr = pageFaultMngr;
@@ -19,8 +19,12 @@ public class CPU {
 		if(table.getPresenceValue(pid, page) == 0){	 //si la pagina no está en ram viene lo interesante
 			fault = true;	//avisamos a nuestro generador que hubo una pageFault
 			//invocamos a PFH, que va a correr el algoritmo y nos va a modificar la ram y la pagetable
-			pageFaultMngr.procesarFallo(pid, page, ram, virtual, table, algo); 
+			//pageFaultMngr.procesarFallo(pid, page, ram, virtual, table, algo); 
+			algo.pageFault(page);
+		} else{
+			pageHit(page);
 		}
+		
 		//hacemos una snapshot de ram y lo mandamos al logger
 		logger.addEntry(Arrays.copyOf(ram.getFrames(), fault));
 	}
