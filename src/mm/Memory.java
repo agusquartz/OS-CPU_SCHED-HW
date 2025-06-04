@@ -4,38 +4,35 @@ import java.util.Arrays;
 public class Memory {
 
 	public Memory(int numFrames){
-		this.numFrames = numFrames;
-		this.frames = new Page[this.numFrames];
+		this.capacity = capacity;
+		this.pages = new HashSet<>();
 	}
 
-	public void putPage(Page p, int index){
-		frames[index] = p;
+			
+	public boolean contains(Page p){
+		return pages.contains(p);
 	}
 
-	public Page removePage(Page p){
-		Page ret;
-		for(int i = 0; i < numFrames; i++){
-			if(p.equals(frames[i])){
-				ret = frames[i];
-				frames[i] = null;
-			}
-		}
-		return ret;
+	public boolean isFull(){
+		return pages.size() >= capacity;
 	}
 
-	public Page[] getFrames(){
-		return Arrays.copyOf(this.frames, numFrames);
+	public void add(Page p){
+		pages.add(p);
 	}
 
-	public int getFrame(Page p){
-		int frame;
-		for(frame = 0; frame < numFrames; frame++){
-			if(p.equals(frames[frame]))
-				return frame;
-		}
-		return -1;
+	public void remove(Page p){
+		pages.remove(p);
 	}
 
-	private int numFrames;
-	private Page[] frames;
+	public int size(){
+		return pages.size();
+	}
+
+	public Set<Page> getPages(){
+		return Collections.unmodifiableSet(pages);
+	}
+
+	private int cap;
+	private Set<Page> pages;
 }
