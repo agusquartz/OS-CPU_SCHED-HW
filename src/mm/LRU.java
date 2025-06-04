@@ -22,13 +22,13 @@ public class LRU implements PagingAlgorithm {
             Page leastUsed = usageOrder.keySet().iterator().next(); // first = LRU
             ram.remove(leastUsed);
             virtual.add(leastUsed);
-            pageTable.updateBit(leastUsed.getProcessId(), leastUsed.getPageNumber(), false);
+            pageTable.updateBit(leastUsed.getProcessId(), leastUsed.getPageNumber(), 0);
             usageOrder.remove(leastUsed);
         }
 
         ram.add(p);
         virtual.remove(p);
-        pageTable.setInRAM(p, true);
+        pageTable.updateBit(p.getProcessId(), p.getPageNumber(), 1);
         usageOrder.put(p, true); // insert or update
 
     }
