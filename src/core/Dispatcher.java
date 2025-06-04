@@ -5,12 +5,14 @@ import java.util.LinkedList;
 public class Dispatcher {
 
     /* Constructor */
-    public Dispatcher(LinkedList<BCP> bcpList, Gantt chart){
+    public Dispatcher(LinkedList<BCP> bcpList, Gantt chart, CPU core1, CPU core2){
         this.processList = bcpList;
         this.chart = chart;
+		this.core1 = core1;
+		this.core2 = core2;
     }
 
-    /* Run well... 'runs' the algorithm and fills the Gantt chart, then returns the String form of this chart
+    /* Run well... 'runs' the algorithm and fills the Gantt chart, then returns the String form of this chart (no it doesn't anymore...)
     */
 
     public boolean run(Algorithm a){
@@ -28,6 +30,9 @@ public class Dispatcher {
             prev = cur;
             //get new process
             cur = a.apply(this.processList, time);
+			//here we call the usePage for our cores...
+			//core1.usePage(cur)
+			//core2.usePage(cur)
             //update BCPs
             updateBCP(prev, cur, time);
             //log things
@@ -110,9 +115,10 @@ public class Dispatcher {
         return processes.stream().allMatch(p -> p.getState() == State.TERMINATED);
     }
 
-
     //Private attributes
     private LinkedList<BCP> processList;
     private Gantt chart;
     int currentTime;
+	private CPU core1;
+	private CPU core2;
 }
