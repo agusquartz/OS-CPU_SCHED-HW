@@ -1,8 +1,8 @@
 package mm;
 public interface PagingAlgorithm {
 
-	void pageHit(Page p);
+	public void pageHit(Page p);
 
-	void pageFault(Page p);
+	public void pageFault(Page p);
 
 }
