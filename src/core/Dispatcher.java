@@ -1,4 +1,6 @@
 package core;
+
+import mm.CPU;
 import scheduling.Algorithm;
 
 import java.util.LinkedList;
