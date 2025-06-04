@@ -33,8 +33,8 @@ public class Dispatcher {
             //get new process
             cur = a.apply(this.processList, time);
 			//here we call the usePage for our cores...
-			//core1.usePage(cur)
-			//core2.usePage(cur)
+			core1.usePage(cur.getProcess());
+			core2.usePage(cur.getProcess());
             //update BCPs
             updateBCP(prev, cur, time);
             //log things
