@@ -18,7 +18,7 @@ public class PFH {
             // There is a free frame available in RAM
             // Get the page from Virtual Memory
             // Insert the page into RAM
-            Page page = virtMem.removePage(processId, pageNumber);
+            Page page = virtMem.removePage(new Page(processId, pageNumber));
             int frame = ram.putPage(page);
 
             // Update the page table (1 = RAM)
@@ -28,15 +28,17 @@ public class PFH {
             // No free frame available, use replacement algorithm
 
             Page victim = algorithm.selectVictim(ram);                                  // Select a victim page using the replacement algorithm
+
             int frameVictim = ram.getFrame(victim);                                     // Get the frame number of the victim page
+            int frameVirtMem = virtMem.getFrame(new Page(processId, pageNumber));       // Get the frame number of the page to be loaded into RAM      
 
             ram.removePage(victim);                                                     // Remove the victim page from RAM
-            virtMem.putPage(victim);                                                    // Write the victim page back to Virtual Memory
-            pageTable.updateBit(victim.getProcessId(), victim.getPageNumber(), 0);      // Update page table (0 = Virtual Memory)
+            Page page = virtMem.removePage(new Page(processId, pageNumber));            // Get the page from Virtual Memory
 
-            Page page = virtMem.removePage(processId, pageNumber);                      // Get the page from Virtual Memory
+            virtMem.putPage(victim, frameVirtMem);                                      // Write the victim page back to Virtual Memory
             ram.putPage(page, frameVictim);                                             // Insert the page into RAM
 
+            pageTable.updateBit(victim.getProcessId(), victim.getPageNumber(), 0);      // Update page table (0 = Virtual Memory)
             pageTable.updateBit(processId, pageNumber, 1);                              // Update the page table (1 = RAM)
         }
     }
