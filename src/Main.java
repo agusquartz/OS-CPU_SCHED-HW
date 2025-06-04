@@ -131,8 +131,9 @@ public class Main{
 
             // Initialize all pages in virtual memory
             for (int i = 0; i < framesNeeded; i++) {
-                pageTable.updateBit(bcp.getId(), (i + 1), 0); // Page initially in virtual memory
-                Page page = new Page(i + 1, bcp.getId());
+                int pageNumber = i + 1; // Page numbers start from 1
+                pageTable.updateBit(bcp.getId(), pageNumber, 0); // Page initially in virtual memory
+                Page page = new Page(pageNumber, bcp.getId());
                 virtMem.add(page);
             }
 
