@@ -22,7 +22,7 @@ public class CPU {
 			pageFaultMngr.procesarFallo(pid, page, ram, virtual, table, algo); 
 		}
 		//hacemos una snapshot de ram y lo mandamos al logger
-		logger.addEntry(Arrays.copyOf(ram.getFrames(), fault);
+		logger.addEntry(Arrays.copyOf(ram.getFrames(), fault));
 	}
 
 	//private vars
