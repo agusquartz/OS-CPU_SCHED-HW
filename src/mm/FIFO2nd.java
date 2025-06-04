@@ -33,7 +33,7 @@ public class FIFO2nd implements PagingAlgorithm {
 				}else{
 					ram.remove(cand);
 					virtual.add(cand);
-					table.updateBit(p.getProcessId(), p.getPageNumber(), 0);	//is in virtual mem now
+					table.updateBit(cand.getProcessId(), cand.getPageNumber(), 0);	//is in virtual mem now
 					referenceBits.remove(cand);
 					break;
 				}
