@@ -14,6 +14,10 @@ public class FIFO2nd implements PagingAlgorithm {
 
 		this.queue = new LinkedList<>();
 		this.referenceBits = new HashMap<>();
+        for(Page p : ram.getPages().toArray(new Page[0])){
+            queue.offer(p);
+            referenceBits.put(p,false);
+        }
 	}
 
 	@Override
