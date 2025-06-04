@@ -26,6 +26,7 @@ public class PFH {
 
         } else {
             // No free frame available, use replacement al
+            Page victim = new Page(0, 0); // Initialize victim page
             ram.remove(victim);                                                     // Remove the victim page from RAM
             virtMem.remove(page);                                                       // Get the page from Virtual Memory
 
