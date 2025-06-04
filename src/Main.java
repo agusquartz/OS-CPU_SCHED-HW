@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import core.*;
 import scheduling.*;
+import mm.*;
 
 public class Main{
     public static LinkedList<BCP> BCPList;
@@ -15,47 +16,10 @@ public class Main{
         Main.BCPList = parser.parse(fileManager.readFile(path));
 
         fileManager.checkOutput();
-        View view = View.getInstance(Main.BCPList);
-
-        /*
-        FCFS fcfs = new FCFS();
-        RR rr = new RR(4);
-        SJFE sjfe = new SJFE();
-        SJF sjf = new SJF();
-        Gantt gantt = new Gantt(BCPList);
-        Dispatcher dispatcher = new Dispatcher(BCPList, gantt);
-
-        
-
-        // Logic of filtering and Execution of algorithms
-        if (dispatcher.run(fcfs)){
-            fileManager.appendToFile(gantt.toCSV("FCFS"));
-        }
-        resetAll(BCPList);
-
-        Gantt gantt2 = new Gantt(BCPList);
-        Dispatcher dispatcher2 = new Dispatcher(BCPList, gantt2);
-        if (dispatcher2.run(sjf)){
-            fileManager.appendToFile(gantt2.toCSV("SJF"));
-        }
-        resetAll(BCPList);
-
-        Gantt gantt3 = new Gantt(BCPList);
-        Dispatcher dispatcher3 = new Dispatcher(BCPList, gantt3);
-        if (dispatcher3.run(sjfe)){
-            fileManager.appendToFile(gantt3.toCSV("SJFE"));
-        }
-        resetAll(BCPList);
-
-        Gantt gantt4 = new Gantt(BCPList);
-        Dispatcher dispatcher4 = new Dispatcher(BCPList, gantt4);
-        if (dispatcher4.run(rr)){
-            fileManager.appendToFile(gantt4.toCSV("RR"));
-        }*/
-
-
+        ViewPaging view = ViewPaging.getInstance(Main.BCPList);
 
     }
+
     public static void executeSerial(List<View.EnumAlgo> normalEnumAlgo, int quantum){
         String algoName;
         // Process normal algorithms only if the list is not null and not empty
@@ -97,7 +61,7 @@ public class Main{
 
     public static void programLogic( List<View.EnumAlgo> normalEnumAlgo, View.EnumAlgo[] multiLevelEnumAlgos,int quantum, int[] quantumByLevel){
         executeSerial(normalEnumAlgo,quantum);
-        executeMultiLevel(multiLevelEnumAlgos,quantumByLevel);
+        //executeMultiLevel(multiLevelEnumAlgos,quantumByLevel);
     }
 
     public static void executeMultiLevel(View.EnumAlgo[] multiLevelEnumAlgos, int[] quantumByLevel){
@@ -144,13 +108,64 @@ public class Main{
         }
     }
 
+    public CPU initializeSystemComponents(List<BCP> bcpList, PageAlgorithm pageAlgorithm) {
+        // Initialize the system components
+        Memory ram = new Memory(20);
+        Memory virtMem = new Memory(200);
+        PageTable pageTable = new PageTable();
+        PFH pageFaultHandler = new PFH();
+        LogManager logManager = new LogManager();
+
+        int virtMemInitialIndex = 0;
+        for (BCP bcp : bcpList) {
+            int framesNeeded = bcp.getProcess().getPages();
+
+            // Initialize all pages in virtual memory
+            for (int i = 0; i < framesNeeded; i++) {
+                pageTable.updateBit(bcp.getId(), (i + 1), 0); // Page initially in virtual memory
+                Page page = new Page(i + 1, bcp.getId());
+                virtMem.putPage(page, virtMemInitialIndex);
+                virtMemInitialIndex++;
+            }
+
+            // Load up to 3 random pages into RAM initially
+            int initialPagesInRam = 3;
+            int ramInitialIndex = 0;
+            Set<Integer> loadedPages = new HashSet<>();
+
+            while (loadedPages.size() < initialPagesInRam && loadedPages.size() < framesNeeded) {
+                int randomPage = (int) (Math.random() * framesNeeded) + 1;
+
+                if (!loadedPages.contains(randomPage)) {
+                    loadedPages.add(randomPage);
+
+                    pageTable.updateBit(bcp.getId(), randomPage, 1); // Mark page as in RAM
+
+                    Page page = virtMem.removePage(bcp.getId(), randomPage);
+                    ram.putPage(page, ramInitialIndex);
+                    ramInitialIndex++;
+                }
+            }
+        }
+
+        // Create and return the CPU with initialized components
+        return new CPU(ram, virtMem, pageFaultHandler, pageTable, pageAlgorithm, logManager);
+    }
+
+
     public static void startJob(LinkedList<BCP> _BCPList, String algoName, Algorithm algo){
         Gantt gantt = new Gantt(_BCPList);
-        Dispatcher dispatcher = new Dispatcher(_BCPList, gantt);
         FileManager fileManager = FileManager.getInstance();
+
+        CPU core1 = initializeSystemComponents(_BCPList);
+        CPU core2 = initializeSystemComponents(_BCPList);
+
+        Dispatcher dispatcher = new Dispatcher(_BCPList, gantt, core1, core2);
 
         if (dispatcher.run(algo)){
             fileManager.appendToFile(gantt.toCSV(algoName));
+            fileManager.appendToFile(core1.getLogManager().toCSV("FIFO 2nd Change"));
+            fileManager.appendToFile(core2.getLogManager().toCSV("LRU"));
         }
         resetAll(Main.BCPList);
     }
