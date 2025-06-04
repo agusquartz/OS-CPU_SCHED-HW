@@ -24,9 +24,6 @@ public class PFH {
             // Update the page table (1 = RAM)
             pageTable.updateBit(processId, pageNumber, 1);
 
-            // Notify the insertion
-            algorithm.notifyInsertion(processId, pageNumber, frame);
-
         } else {
             // No free frame available, use replacement algorithm
 
@@ -37,12 +34,10 @@ public class PFH {
             virtMem.putPage(victim);                                                    // Write the victim page back to Virtual Memory
             pageTable.updateBit(victim.getProcessId(), victim.getPageNumber(), 0);      // Update page table (0 = Virtual Memory)
 
-            Page page = virtMem.removePage(processId, pageNumber);                         // Get the page from Virtual Memory
+            Page page = virtMem.removePage(processId, pageNumber);                      // Get the page from Virtual Memory
             ram.putPage(page, frameVictim);                                             // Insert the page into RAM
 
-            pageTable.updateBit(processId, pageNumber, 1);                           // Update the page table (1 = RAM)
-
-            algorithm.notifyInsertion(processId, pageNumber, frameVictim);               // Notify the replacement algorithm of the insertion
+            pageTable.updateBit(processId, pageNumber, 1);                              // Update the page table (1 = RAM)
         }
     }
 }
