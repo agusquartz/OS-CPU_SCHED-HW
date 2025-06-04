@@ -38,10 +38,13 @@ public class LogManager {
      *
      * @return A string in CSV format representing the RAM snapshots and page faults.
      */
-    public String toCSV() {
+    public String toCSV(String algorithmName) {
         matrix = convertListToMatrix(ramSnapshots);
         Page[][] transposedMatrix = transposePages(matrix);
         StringBuilder sb = new StringBuilder();
+
+        // Add algorithm name
+        sb.append(algorithmName).append(",\n");
 
         int columnas = transposedMatrix[0].length;
         for (int i = 0; i < columnas; i++) {
@@ -127,7 +130,7 @@ public class LogManager {
      * @return A new 2D array that is the transposed version of the input matrix.
      */
     private Page[][] transposePages(Page[][] matrix) {
-        int rows = matriz.length;
+        int rows = matrix.length;
         int colums = matrix[0].length;
 
         Page[][] transposed = new Page[colums][rows];
