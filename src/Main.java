@@ -173,7 +173,7 @@ public class Main{
 
         if (dispatcher.run(algo)){
             fileManager.appendToFile(gantt.toCSV(algoName));
-            fileManager.appendToFile(core1.getLogManager().toCSV("FIFO 2nd Change"));
+            fileManager.appendToFile(core1.getLogManager().toCSV("FIFO 2nd Chance"));
             fileManager.appendToFile(core2.getLogManager().toCSV("LRU"));
         }
         resetAll(Main.BCPList);
