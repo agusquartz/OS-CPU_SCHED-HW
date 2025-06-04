@@ -1,9 +1,12 @@
 package mm;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Collections;
 
 public class Memory {
 
-	public Memory(int numFrames){
+	public Memory(int capacity){
 		this.capacity = capacity;
 		this.pages = new HashSet<>();
 	}
@@ -33,6 +36,6 @@ public class Memory {
 		return Collections.unmodifiableSet(pages);
 	}
 
-	private int cap;
+	private int capacity;
 	private Set<Page> pages;
 }
