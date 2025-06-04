@@ -98,30 +98,63 @@ public class LogManager {
     }
 
     /**
-     * Converts the list of RAM snapshots to a matrix format.
+     * Convierte la lista de snapshots de RAM a un formato matricial.
+     * Se asegura de que cada fila tenga siempre tamaño 20. Si una fila
+     * original tiene menos de 20 elementos, se rellena con null. Si tiene
+     * más de 20, se copian únicamente los primeros 20.
      *
-     * @param ramSnapshots List of Page arrays representing the RAM snapshots.
-     * @return A 2D array (matrix) of Page objects.
+     * @param ramSnapshots List de arreglos de Page que representan los snapshots de RAM.
+     * @return Una matriz 2D de Page con filas de longitud fija 20.
      */
     private Page[][] convertListToMatrix(ArrayList<Page[]> ramSnapshots) {
         int rows = ramSnapshots.size();
         if (rows == 0) {
-            return new Page[0][0]; // empty matrix
+            return null; // matriz vacía
         }
 
-        int columns = ramSnapshots.get(0).length;
-        Page[][] matrix = new Page[rows][columns];
+        final int FIXED_COLUMNS = 20;
+        Page[][] matrix = new Page[rows][FIXED_COLUMNS];
 
         for (int i = 0; i < rows; i++) {
-            Page[] row = ramSnapshots.get(i);
-            if (row.length != columns) {
-                throw new IllegalArgumentException("All rows must have the same number of columns");
-            }
-            matrix[i] = row;
+            Page[] originalRow = ramSnapshots.get(i);
+            Page[] fixedRow = new Page[FIXED_COLUMNS];
+
+            // Copiar hasta 20 elementos o hasta la longitud de la fila original, lo que sea menor
+            int lengthToCopy = Math.min(originalRow.length, FIXED_COLUMNS);
+            System.arraycopy(originalRow, 0, fixedRow, 0, lengthToCopy);
+
+            // Si originalRow.length < 20, las posiciones restantes ya quedan como null
+            matrix[i] = fixedRow;
         }
 
         return matrix;
     }
+
+    // /**
+    //  * Converts the list of RAM snapshots to a matrix format.
+    //  *
+    //  * @param ramSnapshots List of Page arrays representing the RAM snapshots.
+    //  * @return A 2D array (matrix) of Page objects.
+    //  */
+    // private Page[][] convertListToMatrix(ArrayList<Page[]> ramSnapshots) {
+    //     int rows = ramSnapshots.size();
+    //     if (rows == 0) {
+    //         return null; // empty matrix
+    //     }
+
+    //     int columns = ramSnapshots.get(0).length;
+    //     Page[][] matrix = new Page[rows][columns];
+
+    //     for (int i = 0; i < rows; i++) {
+    //         Page[] row = ramSnapshots.get(i);
+    //         if (row.length != columns) {
+    //             throw new IllegalArgumentException("All rows must have the same number of columns");
+    //         }
+    //         matrix[i] = row;
+    //     }
+
+    //     return matrix;
+    // }
 
     /**
      * Transposes a 2D array (matrix) of Page objects.
